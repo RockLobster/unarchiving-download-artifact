@@ -64,3 +64,4 @@ jobs:
         path: check/expected
     - name: Compare with Reference
       run: diff -r actual expected
+      working-directory: check
