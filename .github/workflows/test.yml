@@ -79,3 +79,36 @@ jobs:
         uses: ./
         with:
           name: Multiple-${{ matrix.runs-on }}
+
+  test-unarchive-multiple:
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Upload 1
+        uses: RockLobster/archiving-upload-artifact@v0.2.1
+        with:
+          name: multiple-uploads-one-archive-${{ matrix.runs-on }}
+          directory: __testFiles__
+          path: DirA/FileA.md
+          retention-days: 1
+      - name: Upload 2
+        uses: RockLobster/archiving-upload-artifact@v0.2.1
+        with:
+          name: multiple-uploads-one-archive-${{ matrix.runs-on }}
+          directory: __testFiles__
+          path: DirB/FileB.md
+          retention-days: 1
+      - name: Download
+        uses: ./
+        with:
+          name: multiple-uploads-one-archive-${{ matrix.runs-on }}
+          path: check
+      - name: Check unarchived files
+        run: |
+          [ -f "DirA/FileA.md" ]
+          [ -f "DirB/FileB.md" ]
+        working-directory: check
