@@ -78,4 +78,4 @@ jobs:
       - name: Download
         uses: ./
         with:
-          name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
+          name: Multiple-${{ matrix.runs-on }}
