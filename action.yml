@@ -1,0 +1,27 @@
+name: 'Download a Build Artifact'
+description: 'Download a build artifact that was previously uploaded in the workflow by the RockLobster/archiving-upload-artifact action'
+author: 'GitHub'
+inputs: 
+  name:
+    description: 'Artifact name'
+    required: false
+  path:
+    description: 'Destination path'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Download Archive
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name: ${{ inputs.name }}
+        path: /tmp/RockLobster_download_archive
+    - name: Unarchive
+      run: unzip /tmp/RockLobster_download_archive/*.rTmpArchive.zip -d ${{ inputs.path }}
+      shell: bash
+    - name: Clean Up
+      if: always()
+      run: |
+        rm -rf /tmp/RockLobster_download_archive
+      shell: bash

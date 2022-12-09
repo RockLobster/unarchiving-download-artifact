@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  # This test only checks whether the behavior is the same 
+  # between the reference implementation and my custom actions.
+  test-download:
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest, macos-latest]
+        config:
+          - name: Single
+            directory: __testFiles__/DirA/SubDirA
+            relative_path: FileAA.md
+            reference_path: __testFiles__/DirA/SubDirA/FileAA.md
+          - name: Multiple
+            directory: __testFiles__
+            relative_path: '**'
+            reference_path: __testFiles__/**
+          - name: Multiple2
+            directory: __testFiles__
+            relative_path: |
+              DirA
+              DirB/**
+            reference_path: |
+              __testFiles__/DirA
+              __testFiles__/DirB/**
+      fail-fast: false
+    name: ${{ matrix.config.name }} File Roundtrip Test [${{ matrix.runs-on }}]
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.5.0
+    - name: Upload
+      uses: RockLobster/archiving-upload-artifact@v0.2.0
+      with:
+        name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
+        directory: ${{ matrix.config.directory }}
+        path: ${{ matrix.config.relative_path }}
+        retention-days: 1
+    - name: Upload reference
+      uses: actions/upload-artifact@v3
+      with:
+        name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
+        path: ${{ matrix.config.reference_path }}
+        retention-days: 1
+        if-no-files-found: error
+    - name: Download
+      uses: ./
+      with:
+        name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
+        path: check/actual
+    - name: Download reference
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
+        path: check/expected
+    - name: Compare with Reference
+      run: diff -r actual expected
