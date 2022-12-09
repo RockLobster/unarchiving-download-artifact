@@ -7,7 +7,7 @@ Meant to be used as drop-in replacement for [download-artifact](https://github.c
 ## Example
 ```yaml
 - name: Archive and upload Build Artifacts
-  uses: RockLobster/unarchiving-download-artifact@v0.2
+  uses: RockLobster/unarchiving-download-artifact@v0.2.1
   with:
     name: android-test-results
     path: android/libs

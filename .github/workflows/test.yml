@@ -39,7 +39,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Upload
-      uses: RockLobster/archiving-upload-artifact@v0.2
+      uses: RockLobster/archiving-upload-artifact@v0.2.1
       with:
         name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
         directory: ${{ matrix.config.directory }}
