@@ -73,6 +73,8 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     needs: [test-download]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Download
         uses: ./
         with:
