@@ -37,9 +37,9 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2.5.0
+      uses: actions/checkout@v2
     - name: Upload
-      uses: RockLobster/archiving-upload-artifact@v0.2.1
+      uses: RockLobster/archiving-upload-artifact@v0.2
       with:
         name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
         directory: ${{ matrix.config.directory }}
@@ -58,7 +58,7 @@ jobs:
         name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
         path: check/actual
     - name: Download reference
-      uses: actions/download-artifact@v3.0.1
+      uses: actions/download-artifact@v3
       with:
         name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
         path: check/expected
