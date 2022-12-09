@@ -26,7 +26,7 @@ runs:
     - name: Unarchive
       run: |
         mkdir -p ${{ inputs.path }}
-        unzip /tmp/RockLobster_download_archive/*.rTmpArchive.zip -d ${{ inputs.path }}
+        unzip -o /tmp/RockLobster_download_archive/*.rTmpArchive.zip -d ${{ inputs.path }}
       shell: bash
     - name: Clean Up
       if: always()
