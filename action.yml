@@ -9,10 +9,11 @@ branding:
 inputs: 
   name:
     description: 'Artifact name'
-    required: false
+    required: true
   path:
     description: 'Destination path'
     required: false
+    default: '.'
 
 runs:
   using: composite

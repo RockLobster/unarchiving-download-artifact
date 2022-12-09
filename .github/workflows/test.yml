@@ -36,32 +36,44 @@ jobs:
     name: ${{ matrix.config.name }} File Roundtrip Test [${{ matrix.runs-on }}]
     runs-on: ${{ matrix.runs-on }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Upload
-      uses: RockLobster/archiving-upload-artifact@v0.2.1
-      with:
-        name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
-        directory: ${{ matrix.config.directory }}
-        path: ${{ matrix.config.relative_path }}
-        retention-days: 1
-    - name: Upload reference
-      uses: actions/upload-artifact@v3
-      with:
-        name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
-        path: ${{ matrix.config.reference_path }}
-        retention-days: 1
-        if-no-files-found: error
-    - name: Download
-      uses: ./
-      with:
-        name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
-        path: check/actual
-    - name: Download reference
-      uses: actions/download-artifact@v3
-      with:
-        name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
-        path: check/expected
-    - name: Compare with Reference
-      run: diff -r actual expected
-      working-directory: check
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Upload
+        uses: RockLobster/archiving-upload-artifact@v0.2.1
+        with:
+          name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
+          directory: ${{ matrix.config.directory }}
+          path: ${{ matrix.config.relative_path }}
+          retention-days: 1
+      - name: Upload reference
+        uses: actions/upload-artifact@v3
+        with:
+          name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
+          path: ${{ matrix.config.reference_path }}
+          retention-days: 1
+          if-no-files-found: error
+      - name: Download
+        uses: ./
+        with:
+          name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
+          path: check/actual
+      - name: Download reference
+        uses: actions/download-artifact@v3
+        with:
+          name: reference-${{ matrix.config.name }}-${{ matrix.runs-on }}
+          path: check/expected
+      - name: Compare with Reference
+        run: diff -r actual expected
+        working-directory: check
+
+  test-download-without-path:
+    strategy:
+      matrix:
+        runs-on: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runs-on }}
+    needs: [test-download]
+    steps:
+      - name: Download
+        uses: ./
+        with:
+          name: ${{ matrix.config.name }}-${{ matrix.runs-on }}
